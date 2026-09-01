@@ -1,0 +1,34 @@
+# This is a basic workflow to help you get started with Actions
+
+name: Branch Flow
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on pull request events but only for the main and test branches
+  pull_request:
+    branches: [ main, test ]
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  check-source-branch:
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      - name: Validate source branch
+        run: |
+          BASE="${{ github.event.pull_request.base.ref }}"
+          HEAD="${{ github.event.pull_request.head.ref }}"
+          echo "PR: $HEAD -> $BASE"
+
+          if [ "$BASE" = "main" ] && [ "$HEAD" != "test" ]; then
+            echo "[ERROR] Only 'test' can be merged into 'main'. Got '$HEAD'."
+            exit 1
+          fi
+
+          if [ "$BASE" = "test" ] && [ "$HEAD" != "dev" ]; then
+            echo "[ERROR] Only 'dev' can be merged into 'test'. Got '$HEAD'."
+            exit 1
+          fi
+
+          echo "[OK] Branch flow is valid."
