@@ -1,0 +1,27 @@
+name: Branch Guard
+
+on:
+  pull_request:
+    branches: [main, test]
+
+jobs:
+  check-source-branch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate source branch
+        run: |
+          BASE="${{ github.event.pull_request.base.ref }}"
+          HEAD="${{ github.event.pull_request.head.ref }}"
+          echo "PR: $HEAD -> $BASE"
+
+          if [ "$BASE" = "main" ] && [ "$HEAD" != "test" ]; then
+            echo "[FAIL] Only 'test' can be merged into 'main'. Got '$HEAD'."
+            exit 1
+          fi
+
+          if [ "$BASE" = "test" ] && [ "$HEAD" != "dev" ]; then
+            echo "[FAIL] Only 'dev' can be merged into 'test'. Got '$HEAD'."
+            exit 1
+          fi
+
+          echo "[OK] Branch flow is valid."
