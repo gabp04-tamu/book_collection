@@ -1,6 +1,11 @@
 require 'rails_helper'
 
 RSpec.describe "Books", type: :request do
+  before do
+    admin = Admin.create!(email: 'testadmin@example.com', full_name: 'Test Admin', uid: '123456', avatar_url: 'https://example.com/avatar.jpg')
+    sign_in admin, scope: :admin
+  end
+
   it "creates a book successfully and shows flash notice" do
     post books_path, params: { book: { title: "Amazing Turtles", author: "Jane Doe", price: 9.99, published_date: "2020-01-01" } }
     expect(response).to redirect_to(book_path(Book.last))

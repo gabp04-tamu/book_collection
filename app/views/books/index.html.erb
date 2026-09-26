@@ -3,6 +3,7 @@
 <% content_for :title, "Books" %>
 
 <h1>Books</h1>
+<p>Welcome, <%= current_admin.full_name %>! <%= link_to "Sign Out", destroy_admin_session_path %></p>
 
 <div id="books">
   <% @books.each do |book| %>
