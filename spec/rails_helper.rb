@@ -37,6 +37,7 @@ end
 RSpec.configure do |config|
 
   config.include FactoryBot::Syntax::Methods
+  config.include Devise::Test::IntegrationHelpers, type: :request
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
   config.fixture_paths = [
     Rails.root.join('spec/fixtures')
@@ -72,3 +73,11 @@ RSpec.configure do |config|
   # arbitrary gems may also be filtered via:
   # config.filter_gems_from_backtrace("gem name")
 end
+
+OmniAuth.config.test_mode = true
+OmniAuth.config.mock_auth[:google_oauth2] = OmniAuth::AuthHash.new({
+  provider: 'google_oauth2',
+  uid: '123456',
+  info: { email: 'testadmin@example.com', name: 'Test Admin', image: 'https://example.com/avatar.jpg' },
+  credentials: { token: 'mock_token', expires_at: Time.now + 1.week }
+})
